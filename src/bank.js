@@ -1,0 +1,8 @@
+import {topics} from './catalog.js';
+export const bank=[];
+function base(topic,type,prompt,explanation,extra={}){const t=topics.find(t=>t.id===topic); let hash=2166136261;for(const ch of type+prompt){hash^=ch.charCodeAt(0);hash=Math.imul(hash,16777619);}const q={id:`${topic}-${(hash>>>0).toString(16).padStart(8,'0')}`,topic,chapter:t.chapter,teks:[...t.teks],type,prompt,explanation,source:t.chapter===5?'curriculum5':'curriculum6',level:'apply',...extra};bank.push(q);return q;}
+export function choice(topic,prompt,answers,explanation,extra={}){return base(topic,'choice',prompt,explanation,{options:answers.map((a,i)=>({id:`o${i}`,text:a[0],why:a[1]})),answer:['o0'],...extra});}
+export function select(topic,prompt,answers,correct,explanation,extra={}){return base(topic,'select',prompt,explanation,{options:answers.map((a,i)=>({id:`o${i}`,text:a[0],why:a[1]})),answer:correct.map(i=>`o${i}`),...extra});}
+export function order(topic,prompt,events,explanation,extra={}){return base(topic,'order',prompt,explanation,{options:events.map((text,i)=>({id:`o${i}`,text})),answer:events.map((_,i)=>`o${i}`),...extra});}
+export function evidence(topic,prompt,sentences,index,explanation,extra={}){return base(topic,'evidence',prompt,explanation,{options:sentences.map((a,i)=>({id:`o${i}`,text:a[0],why:a[1]})),answer:[`o${index}`],...extra});}
+export function classify(topic,prompt,categories,items,explanation,extra={}){return base(topic,'classify',prompt,explanation,{categories:categories.map((text,i)=>({id:`c${i}`,text})),options:items.map((a,i)=>({id:`o${i}`,text:a[0],category:`c${a[1]}`,why:a[2]})),answer:Object.fromEntries(items.map((a,i)=>[`o${i}`,`c${a[1]}`])),...extra});}
